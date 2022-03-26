@@ -1,0 +1,165 @@
+openapi: 3.0.2
+info:
+    title: Movies API
+    version: 1.0.0
+    description: '### This is a Swagger UI for our Movies API'
+paths:
+    /movies:
+        get:
+            tags:
+                - movies
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                            examples:
+                                List of movies:
+                                    value:
+                                        - Titanic
+                                        - Johnny English
+                                        - Kingsman
+                    description: Returns a list of movies
+                '201':
+                    description: Created a new movie
+            summary: Get a list of all movies
+            description: Returns a list of all movies in API
+        post:
+            requestBody:
+                description: A new movie was created
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/new-movie'
+                required: true
+            tags:
+                - new-movie
+            responses:
+                '201':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/new-movie'
+                            examples:
+                                Create new movie:
+                                    value:
+                                        title: Cast Away
+                                        year: 2000
+                    description: Creates a new movie
+                '400':
+                    content:
+                        text/xml:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Movie was not created:
+                                    value:
+                                        error: Movie was not created
+                    description: nodemon
+            summary: A new movie to be created
+            description: Creates a new movie
+    '/movies/{id}':
+        get:
+            tags:
+                - details
+            parameters:
+                -
+                    name: id
+                    description: Movie id
+                    schema:
+                        type: integer
+                    in: path
+                    required: true
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                            examples:
+                                Full details of a given title:
+                                    value:
+                                        -
+                                            id: 9
+                                            title: The Hunger Games
+                                            year: 2012
+                    description: Returns full details of a given id movie
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Movie/w+ was not found:
+                                    value:
+                                        error: Movie was not found in movie array
+                    description: Movie was not found in movies array
+            summary: Get full details of a movie
+            description: Returns full details of a given id movie
+        delete:
+            tags:
+                - delete-movie
+            responses:
+                '204':
+                    description: Movie was deleted
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Movie was not found:
+                                    value:
+                                        error: movie was not found
+                    description: Movie was not found
+            summary: Delete a movie
+            description: Deletes selected movie
+        parameters:
+            -
+                name: id
+                schema:
+                    type: integer
+                in: path
+                required: true
+components:
+    schemas:
+        error:
+            title: Root Type for error
+            description: ''
+            type: object
+            properties:
+                error:
+                    type: string
+            example:
+                error: Error message.
+        new-movie:
+            title: Root Type for new-movie
+            description: ''
+            required:
+                - title
+                - year
+            type: object
+            properties:
+                title:
+                    type: string
+                year:
+                    type: integer
+            example:
+                title: Star Wars
+                year: 1977
+        delete-movie:
+            description: ''
+            required:
+                - id
+            type: object
+            properties:
+                id:
+                    description: ''
+                    type: integer
+            example:
+                id: 1

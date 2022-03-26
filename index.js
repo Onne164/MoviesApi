@@ -1,10 +1,70 @@
-const app = require('express')()
+const express = require('express')
+const cors = require('cors')
+const app = express()
 const port = 8080
 const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./docs/swagger.json');
+const yamljs = require('yamljs')
+const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+
+app.use(cors())
+app.use(express.json())
+
+const movies = [
+    {id: 1, title: "Titanic", year: 1997}, 
+    {id: 2, title: "Johnny English", year: 2003}, 
+    {id: 3, title: "Kingsman", year: 2014}, 
+    {id: 4, title: "The Notebook", year: 2004}, 
+    {id: 5, title: "A Star Is Born", year: 2018}, 
+    {id: 6, title:  "Rocky", year: 1976}, 
+    {id: 7, title:  "Jurassic Park", year: 1993}, 
+    {id: 8, title:  "Forrest Gump", year: 1994}, 
+    {id: 9, title:  "The Hunger Games", year: 2012}, 
+]
+
+app.get('/movies', (req, res) => {
+    res.send(movies)
+})
+
+app.get('/movies/:id', (req, res) => {
+    if (typeof movies[req.params.id - 1] === 'undefined') {
+        return res.status(404).send({error: "Movie not found"})
+    }
+    res.send(movies[req.params.id - 1])
+})
+
+app.post('/movies', (req, res) => {
+    if (!req.body.title || !req.body.year) {
+        return res.status(400).send({error: 'One or all params are missing'})
+    }
+    let movie = {
+        id: movies.length + 1,
+        title: req.body.title,
+        year: req.body.year
+    }
+    movies.push(movie)
+
+    res.status(201)
+       .location(`${getBaseUrl(req)}/movies/${movies.length}`)
+       .send(movie)
+})
+
+app.delete('/movies/:id', (req, res) => {
+    if (typeof movies[req.params.id - 1] === 'undefined') {
+        return res.status(404).send({error: 'Movie not found'})
+    }
+
+    movies.splice(req.params.id - 1, 1)
+
+    res.status(204).send({error: "No content"})
+})
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.listen(port, () => {
     console.log(`API up at: http://localhost:${port}`)
 })
+
+function getBaseUrl(req) {
+    return req.connection && req.connection.encrypted
+    ? 'https' : 'http' + `://${req.headers.host}`
+}
