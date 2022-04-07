@@ -13,10 +13,12 @@
             <tr>
                 <th>Movie</th>
                 <th>Release Year</th>
+                <th>Actors</th>
             </tr>
             <tr v-for="movie in movies">
                 <td @click="getMovie(movie.id)">{{movie.title}}</td>
                 <td>{{movie.year}}</td>
+                <td>{{movie.actors}}</td>
             </tr>
         </table> 
     <div id="movieInfoModal" class="modal" tabindex="-1">
@@ -30,6 +32,8 @@
                             <tr><th>ID</th><td>{{movieInModal.id}}</td></tr>
                             <tr><th>Movie</th><td>{{movieInModal.title}}</td></tr>
                             <tr><th>Release Year</th><td>{{movieInModal.year}}</td></tr>
+                            <tr><th>Actors</th><td>{{movieInModal.actors}}</td></tr>
+
                         </table>
                     </div>
                     <div class="modal-footer">

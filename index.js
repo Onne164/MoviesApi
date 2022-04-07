@@ -21,8 +21,34 @@ const movies = [
     {id: 9, title:  "The Hunger Games", year: 2012}, 
 ]
 
+const actors = [
+    {id: 1, name: "Tom Hanks"},
+    {id: 2, name: "Leonardo di Caprio"},
+    {id: 3, name: "Rowan Atkinson"},
+    {id: 4, name: "Silvester Stallone"},
+]
+
+const movieActors = [
+    {actorId: 1, movieId: 8 },
+    {actorId: 2, movieId: 1 },
+    {actorId: 1, movieId: 1 }
+]
+
 app.get('/movies', (req, res) => {
-    res.send(movies)
+    moviesWithActors = movies.map((movie) => {
+        let results = movieActors.filter(function (item) {
+            // console.log("movie", movie)
+            // console.log("movieActors.item",item)
+            return item.movieId == movie.id;
+        });
+        movie.actors = results.map((ma) => {
+            return actors.find(function(actor) {
+                return actor.id == ma.actorId;
+            });
+        });
+        return movie;
+    })
+    res.send(moviesWithActors)
 })
 
 app.get('/movies/:id', (req, res) => {
