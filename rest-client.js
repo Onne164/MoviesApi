@@ -2,7 +2,8 @@ const vue = Vue.createApp({
      data() {
          return {
              movieInModal: {title: null},
-             movies: []
+             movies: [],
+             actors: []
          }
      },
      async created() {

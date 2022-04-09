@@ -18,7 +18,7 @@
             <tr v-for="movie in movies">
                 <td @click="getMovie(movie.id)">{{movie.title}}</td>
                 <td>{{movie.year}}</td>
-                <td>{{movie.actors}}</td>
+                <td><div v-for="(actor, index) in movie.actors" :key="index">{{actor.name}}</div></td>
             </tr>
         </table> 
     <div id="movieInfoModal" class="modal" tabindex="-1">
