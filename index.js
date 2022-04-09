@@ -26,12 +26,31 @@ const actors = [
     {id: 2, name: "Leonardo di Caprio"},
     {id: 3, name: "Rowan Atkinson"},
     {id: 4, name: "Silvester Stallone"},
+    {id: 5, name: "Kate Winslet"},
+    {id: 6, name: "Colin Firth"},
+    {id: 7, name: "Rachel McAdams"},
+    {id: 8, name: "Bradley Cooper"},
+    {id: 9, name: "Lady Gaga"},
+    {id: 10, name: "Sylvester Stallone"},
+    {id: 11, name: "Sam Neill"},
+    {id: 12, name: "Jennifer Lawrence"},
+    {id: 13, name: "Lenny Kravitz"},
+
 ]
 
 const movieActors = [
     {actorId: 1, movieId: 8 },
     {actorId: 2, movieId: 1 },
-    {actorId: 1, movieId: 1 }
+    {actorId: 3, movieId: 2 },
+    {actorId: 5, movieId: 1 },
+    {actorId: 6, movieId: 3 },
+    {actorId: 7, movieId: 4 },
+    {actorId: 8, movieId: 5 },
+    {actorId: 9, movieId: 5 },
+    {actorId: 10, movieId: 6 },
+    {actorId: 11, movieId: 7 },
+    {actorId: 12, movieId: 9 },
+    {actorId: 13, movieId: 9 },
 ]
 
 app.get('/movies', (req, res) => {
