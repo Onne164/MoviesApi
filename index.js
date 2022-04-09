@@ -19,11 +19,14 @@ const movies = [
     {id: 7, title:  "Jurassic Park", year: 1993}, 
     {id: 8, title:  "Forrest Gump", year: 1994}, 
     {id: 9, title:  "The Hunger Games", year: 2012}, 
+    {id: 10, title:  "Serena", year: 2014}, 
+    {id: 11, title:  "The Great Gatsby", year: 2013}, 
+    {id: 12, title:  "American Sniper", year: 2014}, 
 ]
 
 const actors = [
     {id: 1, name: "Tom Hanks"},
-    {id: 2, name: "Leonardo di Caprio"},
+    {id: 2, name: "Leonardo DiCaprio"},
     {id: 3, name: "Rowan Atkinson"},
     {id: 4, name: "Silvester Stallone"},
     {id: 5, name: "Kate Winslet"},
@@ -51,6 +54,10 @@ const movieActors = [
     {actorId: 11, movieId: 7 },
     {actorId: 12, movieId: 9 },
     {actorId: 13, movieId: 9 },
+    {actorId: 12, movieId: 10 },
+    {actorId: 2, movieId: 11 },
+    {actorId: 8, movieId: 12 },
+
 ]
 
 app.get('/movies', (req, res) => {
