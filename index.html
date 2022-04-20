@@ -32,7 +32,8 @@
                             <tr><th>ID</th><td>{{movieInModal.id}}</td></tr>
                             <tr><th>Movie</th><td>{{movieInModal.title}}</td></tr>
                             <tr><th>Release Year</th><td>{{movieInModal.year}}</td></tr>
-                            <tr><th>Actors</th><td>{{movieInModal.actors}}</td></tr>
+                            <tr><th>Actors</th><td><div v-for="(actor, index) in movieInModal.actors"
+                                :key="index">{{actor.name}}</div></td></tr>
 
                         </table>
                     </div>
