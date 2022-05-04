@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Onne164/MoviesApi#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "swagger-ui-express": "^4.3.0",

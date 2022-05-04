@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 const cors = require('cors')
 const app = express()
 const port = 8080
@@ -91,7 +92,8 @@ app.post('/movies', (req, res) => {
     let movie = {
         id: movies.length + 1,
         title: req.body.title,
-        year: req.body.year
+        year: req.body.year,
+        actors: req.body.actors
     }
     movies.push(movie)
 
@@ -99,6 +101,21 @@ app.post('/movies', (req, res) => {
        .location(`${getBaseUrl(req)}/movies/${movies.length}`)
        .send(movie)
 })
+
+app.put('/movies/:id', async (req, res) => {
+    let title = req.body.title;
+    let year = req.body.year;
+    let actors = req.body.actors;
+  
+    try {
+      await updateMovie(req.params.id, { title, year, actors });
+  
+      return res.status(200).send({ success: 'Successfully updated!'});
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send({ error: 'An error occurred in movie modifications...' });
+    }
+  });
 
 app.delete('/movies/:id', (req, res) => {
     if (typeof movies[req.params.id - 1] === 'undefined') {

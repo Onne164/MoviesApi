@@ -1,51 +1,97 @@
 const vue = Vue.createApp({
-     data() {
-         return {
-             movieInModal: {title: null},
-             movies: [],
-             actors: [],
-             myModel:false,
-             dynamicTitle:'Add Movie',
-             actionButton:'Insert',
+  props: ['movie'],
+  data() {
+    return {
+      movieInModal: { title: null },
+      movies: {},
+      actors: [{ name: '' }],
+      // actor: {},
+      myModel: false,
+      dynamicTitle: 'Add Movie',
+      actionButton: 'Insert',
+      loading: false,
+      submitting: false,
+      title: '',
+      year: '',
+      test_movie: {},
+      test_id: '',
+      movie: {},
+    };
+  },
+  async created() {
+    this.movies = await (await fetch('http://localhost:8080/movies')).json();
+  },
+  methods: {
+    async getMovie(id) {
+      this.movieInModal = await (await fetch(`http://localhost:8080/movies/${id}`)).json();
+      const movieInfoModal = new bootstrap.Modal(document.getElementById('movieInfoModal'), {});
+      movieInfoModal.show();
+    },
+    addActor() {
+      this.actors.push({ name: '' });
+    },
+    async fetchAllData() {
+      this.loading = true;
+      this.movies = [];
 
-         }
-     },
-     async created() {
-         this.movies = await (await fetch('http://localhost:8080/movies')).json();
-     },
-     methods: {
-         getMovie: async function(id) {
-             this.movieInModal = await(await fetch(`http://localhost:8080/movies/${id}`)).json()
-             let movieInfoModal = new bootstrap.Modal(document.getElementById('movieInfoModal'), {})
-             movieInfoModal.show()
-         },
-         openModel: function(){
-            title = '';
-            year = '';
-            actors = [];
-            actionButton = "Insert";
-            dynamicTitle = "Add Movie";
-            this.myModel = true;
-           },
-           submitData:function(){
-            if(title != '' && year != '')
-            {
-             if(actionButton == 'Insert')
-             {
-              app.post('/movies', (req, res), {
-               action:'insert',
-               title:app.title, 
-               year:app.year,
-               actors: app.actors
-              }).then(function(response){
-               app.myModel = false;
-               app.fetchAllData();
-               app.title = '';
-               app.year = '';
-               alert(response.data.message);
-              });
-             }
-            }
-        }
-     }
- }).mount('#app')
+      axios.get('http://localhost:8080/movies')
+        .then((response) => {
+          const { data } = response;
+          this.movies = response.data;
+          this.loading = false;
+        });
+    },
+    openModal() {
+      this.title = '';
+      this.year = '';
+      this.actors = [],
+      this.actionButton = 'Insert';
+      this.dynamicTitle = 'Add Movie';
+      this.myModel = true;
+    },
+    openEditModal() {
+      this.actionButton = 'Save';
+      this.dynamicTitle = 'Edit Movie';
+      this.myModel = true;
+    },
+    handleSubmit() {
+      this.submitting = true;
+
+      axios
+        .post('http://localhost:8080/movies', {
+          title: this.title,
+          year: this.year,
+          actors: this.actors,
+        })
+        .then((response) => {
+          const { data } = response;
+          this.movies.push(data);
+          this.title = '';
+          this.year = '';
+          this.actors = [];
+          this.submitting = false;
+          this.myModel = false;
+        });
+    },
+    async updateMovie(id) {
+      this.openEditModal();
+      
+
+    },
+    deleteData(index) {
+      this.movies.splice(index, 1);
+    },
+
+    loadData() {
+      axios.get('http://localhost:8080/movies/').then((result)=>{
+      this.movies = result.data
+    })
+      
+
+    }
+  },
+  mounted() 
+  {
+    this.loadData();
+  }
+}).mount('#app');
