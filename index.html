@@ -20,15 +20,15 @@
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
-            <tr v-for="movie in movies" v-bind:key="movie.id">
+            <tr v-for="(movie, index) in movies" v-bind:key="movie.id">
                 <td @click="getMovie(movie.id)">{{movie.title}}</td>
                 <td>{{movie.year}}</td>
                 <td>
                     <div v-for="(actor, index) in movie.actors" :key="index">{{actor.name}}</div>
                 </td>
                 <td><button type="button" name="edit" class="btn btn-primary btn-xs edit" data-toggle="modal"
-                        @click="updateMovie(movie.id)">Edit</button></td>
-                <td><button type="button" class="btn btn-danger pull-right" data-toggle="modal" @click="deleteData(index)">Delete</button></td>
+                        @click="openEditModal(movie)">Edit</button></td>
+                <td><button type="button" class="btn btn-danger pull-right" data-toggle="modal" @click="deleteData(movie, index)">Delete</button></td>
             </tr>
         </table>
 
@@ -46,6 +46,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form class="input-field" @submit.prevent="handleSubmit">
+                                        <input type="hidden" v-model="id" />
                                         <label>Enter Movie Title</label>
                                         <input required type="text" class="form-control" v-model="title" />
 

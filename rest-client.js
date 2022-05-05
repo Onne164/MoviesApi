@@ -49,37 +49,70 @@ const vue = Vue.createApp({
       this.dynamicTitle = 'Add Movie';
       this.myModel = true;
     },
-    openEditModal() {
+    openEditModal(movie) {
       this.actionButton = 'Save';
       this.dynamicTitle = 'Edit Movie';
       this.myModel = true;
+      //this.title = movie.title;
+      // kopeeri moviewt kõik This-i sisse
+      for (let key in movie) {
+        this[key] = movie[key]
+      }
     },
     handleSubmit() {
       this.submitting = true;
 
-      axios
-        .post('http://localhost:8080/movies', {
-          title: this.title,
-          year: this.year,
-          actors: this.actors,
-        })
+      const clearModal = () => {
+        this.id = undefined;
+        this.title = '';
+        this.year = '';
+        this.actors = [];
+        this.submitting = false;
+        this.myModel = false;
+      }
+
+      console.log("submit", this, this.title, this.id);
+      let data = {
+        title: this.title,
+        year: this.year,
+        actors: this.actors,
+      }
+      let isNew = this.id === undefined
+      if(isNew) {
+        axios
+        .post('http://localhost:8080/movies', data)
         .then((response) => {
           const { data } = response;
           this.movies.push(data);
-          this.title = '';
-          this.year = '';
-          this.actors = [];
-          this.submitting = false;
-          this.myModel = false;
+          clearModal()
         });
+      } else {
+        axios
+        .put('http://localhost:8080/movies/'+this.id, data)
+        .then((response) => {
+          const { data } = response;
+
+          // Update existing movie
+          let currentMovie = this.movies.find(movie => movie.id == this.id);
+          if (currentMovie) {
+            for (let key in data.movie) {
+              currentMovie[key] = data.movie[key]
+            }
+          }
+          clearModal()
+        });
+      }
     },
-    async updateMovie(id) {
-      this.openEditModal();
-      
+    async updateMovie(movie) {
+      //fetch("movies/"+movie.id, {body: movie})
 
     },
-    deleteData(index) {
-      this.movies.splice(index, 1);
+    deleteData(movie, index) {
+      if(confirm("Are you sure you want to remove this movie?")) {
+        console.log(index)
+        this.movies.splice(index, 1);
+        // fetch("movies/"+movie.id)
+      }    
     },
 
     loadData() {

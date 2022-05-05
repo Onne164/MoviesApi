@@ -108,9 +108,17 @@ app.put('/movies/:id', async (req, res) => {
     let actors = req.body.actors;
   
     try {
-      await updateMovie(req.params.id, { title, year, actors });
+      //await updateMovie(req.params.id, { title, year, actors });
+      // Update existing movie
+      let currentMovie = movies.find(movie => movie.id == req.params.id);
+      console.log(currentMovie, req.params.id, movies)
+      if (currentMovie) {
+        for (let key in req.body) {
+          currentMovie[key] = req.body[key]
+        }
+      }
   
-      return res.status(200).send({ success: 'Successfully updated!'});
+      return res.status(200).send({ success: 'Successfully updated!', movie: currentMovie});
     } catch (error) {
       console.log(error);
       return res.status(400).send({ error: 'An error occurred in movie modifications...' });
