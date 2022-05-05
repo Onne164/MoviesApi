@@ -1,5 +1,4 @@
 const vue = Vue.createApp({
-  props: ['movie'],
   data() {
     return {
       movieInModal: { title: null },
@@ -71,11 +70,13 @@ const vue = Vue.createApp({
         this.myModel = false;
       }
 
-      console.log("submit", this, this.title, this.id);
+      // console.log("submit", this, this.title, this.id);
       let data = {
         title: this.title,
         year: this.year,
         actors: this.actors,
+        // actors: [{ name: this.name }],
+
       }
       let isNew = this.id === undefined
       if(isNew) {
@@ -105,12 +106,15 @@ const vue = Vue.createApp({
     },
     async updateMovie(movie) {
       //fetch("movies/"+movie.id, {body: movie})
+      
+
 
     },
     deleteData(movie, index) {
       if(confirm("Are you sure you want to remove this movie?")) {
         console.log(index)
         this.movies.splice(index, 1);
+
         // fetch("movies/"+movie.id)
       }    
     },

@@ -103,8 +103,6 @@ app.post('/movies', (req, res) => {
 })
 
 app.put('/movies/:id', async (req, res) => {
-    let title = req.body.title;
-    let year = req.body.year;
     let actors = req.body.actors;
   
     try {
