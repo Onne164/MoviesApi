@@ -60,7 +60,7 @@
                                         <button type="button" class="add-actor" @click="addActor">+</button>
                                         <br />
                                         <br />
-                                        <input required type="text" class="form-control" v-for="(actor, index) in actors"
+                                        <input type="text" class="form-control" v-for="(actor, index) in actors"
                                         :key="index"
                                         v-model="actors[index].name" />
                                         <hr />

@@ -63,16 +63,7 @@ const movieActors = [
 
 app.get('/movies', (req, res) => {
     moviesWithActors = movies.map((movie) => {
-        let results = movieActors.filter(function (item) {
-            // console.log("movie", movie)
-            // console.log("movieActors.item",item)
-            return item.movieId == movie.id;
-        });
-        movie.actors = results.map((ma) => {
-            return actors.find(function(actor) {
-                return actor.id == ma.actorId;
-            });
-        });
+        movie.actors = getMovieActors(movie.id)
         return movie;
     })
     res.send(moviesWithActors)
@@ -89,27 +80,48 @@ app.post('/movies', (req, res) => {
     if (!req.body.title || !req.body.year) {
         return res.status(400).send({error: 'One or all params are missing'})
     }
-    let movie = {
-        id: movies.length + 1,
-        title: req.body.title,
-        year: req.body.year,
-        actors: req.body.actors
-    }
-    movies.push(movie)
 
+    let movie = createMovie(req.body)
+    for (let actor of req.body.actors) {
+        if (actor.id === undefined) {
+            let newActor = findOrCreateActor(actor)
+            console.log(newActor, movie)
+            movieActors.push( {actorId: newActor.id, movieId: movie.id })
+        }
+    }
+    
     res.status(201)
        .location(`${getBaseUrl(req)}/movies/${movies.length}`)
        .send(movie)
 })
 
 app.put('/movies/:id', async (req, res) => {
-    let actors = req.body.actors;
-  
+
+    let movieId = req.params.id;
+    for (let actor of req.body.actors) {
+        if (actor.id === undefined) {
+            let newActor = findOrCreateActor(actor)
+            movieActors.push( {actorId: newActor.id, movieId })
+        }
+    }
+    
+    //leia erinevused http-andmete ja andmebaasi vahel
+    let prev = getMovieActors(movieId)
+    for (let existingActor of prev) {
+        let found = req.body.actors.find(actor => actor.name == existingActor.name)
+        if (found === undefined) {
+            let index = movieActors.findIndex(ma => ma.actorId == existingActor.id && ma.movieId == movieId)
+            movieActors.splice(index, 1)
+        }
+    }
+    
+
     try {
       //await updateMovie(req.params.id, { title, year, actors });
       // Update existing movie
       let currentMovie = movies.find(movie => movie.id == req.params.id);
-      console.log(currentMovie, req.params.id, movies)
+    //   console.log(currentMovie, req.params.id, movies, actors)
+   
       if (currentMovie) {
         for (let key in req.body) {
           currentMovie[key] = req.body[key]
@@ -132,6 +144,53 @@ app.delete('/movies/:id', (req, res) => {
 
     res.status(204).send({error: "No content"})
 })
+
+function createMovie(movie) {
+    let lastId = movies[movies.length-1].id;
+    let newMovie = {
+        id: lastId +1,
+        title: movie.title,
+        year: movie.year,
+        // actors: req.body.actors
+    }
+    movies.push(newMovie)
+    return newMovie
+}
+
+function getMovieActors(movieId) {
+    let results = movieActors.filter(function (item) {
+        // console.log("movie", movie)
+        // console.log("movieActors.item",item)
+        return item.movieId == movieId;
+    });
+    return results.map((ma) => {
+        return actors.find(function(actor) {
+            return actor.id == ma.actorId;
+        });
+    });
+}
+
+function findOrCreateActor(actor) {
+    let existing;
+    // Find by id
+    existing = actors.find(a => a.id == actor?.id)
+    if (existing)
+        return existing;
+    
+    // Find by name
+    existing = actors.find(a => a.name == actor?.name)
+    if (existing)
+        return existing;
+    
+    // create new
+    let lastId = actors[actors.length-1].id;
+    let newActor = {
+        ...actor,
+        id: lastId + 1,
+    };
+    actors.push(newActor);
+    return newActor;
+}
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
