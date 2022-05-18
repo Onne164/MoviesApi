@@ -136,11 +136,16 @@ app.put('/movies/:id', async (req, res) => {
   });
 
 app.delete('/movies/:id', (req, res) => {
-    if (typeof movies[req.params.id - 1] === 'undefined') {
-        return res.status(404).send({error: 'Movie not found'})
+    let currentMovie = movies.find(movie => movie.id == req.params.id);
+    if (currentMovie) {
+        let index = movies.findIndex(m => m.id == currentMovie.id)
+        movies.splice(index, 1)
     }
+    // if (typeof movies[req.params.id - 1] === 'undefined') {
+    //     return res.status(404).send({error: 'Movie not found'})
+    // }
 
-    movies.splice(req.params.id - 1, 1)
+    // movies.splice(req.params.id - 1, 1)
 
     res.status(204).send({error: "No content"})
 })

@@ -110,12 +110,13 @@ const vue = Vue.createApp({
 
 
     },
-    deleteData(movie, index) {
+    async deleteData(movieId) {
       if(confirm("Are you sure you want to remove this movie?")) {
-        console.log(index)
-        this.movies.splice(index, 1);
-
-        // fetch("movies/"+movie.id)
+      await axios.delete("http://localhost:8080/movies/"+ movieId)
+                    .then(response => {
+                        let index = this.movies.map(data => data.id).indexOf(movieId);
+                        this.movies.splice(index, 1)
+                    });
       }    
     },
 
