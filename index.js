@@ -70,10 +70,12 @@ app.get('/movies', (req, res) => {
 })
 
 app.get('/movies/:id', (req, res) => {
-    if (typeof movies[req.params.id - 1] === 'undefined') {
+
+    let currentMovie = movies.find(movie => movie.id == req.params.id);
+    if (!currentMovie) {
         return res.status(404).send({error: "Movie not found"})
-    }
-    res.send(movies[req.params.id - 1])
+    } 
+    res.send(currentMovie)
 })
 
 app.post('/movies', (req, res) => {
